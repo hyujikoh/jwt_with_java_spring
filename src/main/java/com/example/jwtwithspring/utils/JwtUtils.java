@@ -2,9 +2,13 @@ package com.example.jwtwithspring.utils;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
 
@@ -15,6 +19,12 @@ import java.util.UUID;
  */
 @Component
 public class JwtUtils {
+
+    // sha 256 시크릿 키
+    private static final String SECRET_KEY_32 = "RBWXHJlYXtmfL5j4+ObYL3L20wns5e/h4uYvT45UxPI=";
+
+    // sha 512 시크릿 키
+    private static final String SECRET_KEY_64 = "SntJsbqFMtFSC0GFXRpOb9OZR64V0Ztv/qRexuZkh4Dpp3TExTLVMBsu4WXkjZQb5UFdo9SL73z5ebYYmisb4w==";
 
     public String createJwt() {
         // 보다 명시적으로 분리하기 위해 builder 선언
@@ -49,6 +59,18 @@ public class JwtUtils {
                 .add("custom-claim-key1","custom-claim-value-1") // 커스텀 클레임을 적용이 가능하다. 운영자가 사용자 토큰을 보다 명시적으로 구분하기 위해 사용해도 좋다.
                 .add("custom-claim-key2","custom-claim-value-2")
                 .and();
+
+        // 서명에 대한 내용
+        builder.signWith(getSigningKey());
         return builder.compact();
+    }
+
+    /**
+     * 시크릿 키 생성 메서드
+     * @return
+     */
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(this.SECRET_KEY_64);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
