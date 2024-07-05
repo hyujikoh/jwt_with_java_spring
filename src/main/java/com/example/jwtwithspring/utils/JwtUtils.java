@@ -73,4 +73,9 @@ public class JwtUtils {
         byte[] keyBytes = Decoders.BASE64.decode(this.SECRET_KEY_64);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public void readJwt(String jwt) {
+
+        return;
+    }
 }
