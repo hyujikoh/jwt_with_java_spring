@@ -1,5 +1,7 @@
 package com.example.jwtwithspring.utils;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -75,12 +77,23 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public void readJwt(String token) {
+    public Jws<Claims> readJwt(String token) {
         if(token == null || token.isBlank() || token.isEmpty()){
             throw new NullPointerException();
         }
+        String jwt = token.replaceAll("^Bearer( )*", "");
+        Jws<Claims> claims;
 
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY_64)
+                    .build().parseSignedClaims(token);
 
-        return;
+            return claims;
+        }
+        catch (Exception e){
+
+        }
+        return null;
     }
 }
