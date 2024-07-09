@@ -1,12 +1,15 @@
 package com.example.jwtwithspring.utils;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.apache.catalina.util.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
+import org.springframework.util.StringUtils;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
@@ -72,5 +75,25 @@ public class JwtUtils {
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(this.SECRET_KEY_64);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public Jws<Claims> readJwt(String token) {
+        if(token == null || token.isBlank() || token.isEmpty()){
+            throw new NullPointerException();
+        }
+        String jwt = token.replaceAll("^Bearer( )*", "");
+        Jws<Claims> claims;
+
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY_64)
+                    .build().parseSignedClaims(token);
+
+            return claims;
+        }
+        catch (Exception e){
+
+        }
+        return null;
     }
 }

@@ -25,4 +25,12 @@ public class JwtTest {
 
         Assertions.assertNotEquals(jwt,null);
     }
+
+    @Test
+    @DisplayName("토큰을 읽는 테스트 코드 입니다.")
+    public void readJwt(){
+        String jwt = this.jwtUtils.createJwt();
+
+        this.jwtUtils.readJwt(jwt);
+    }
 }
