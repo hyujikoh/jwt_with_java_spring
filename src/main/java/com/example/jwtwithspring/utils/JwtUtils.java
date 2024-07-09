@@ -4,9 +4,10 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.apache.catalina.util.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
+import org.springframework.util.StringUtils;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
@@ -74,7 +75,11 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public void readJwt(String jwt) {
+    public void readJwt(String token) {
+        if(token == null || token.isBlank() || token.isEmpty()){
+            throw new NullPointerException();
+        }
+
 
         return;
     }
