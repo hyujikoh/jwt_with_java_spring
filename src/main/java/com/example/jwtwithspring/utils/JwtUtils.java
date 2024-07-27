@@ -6,11 +6,15 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.util.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.resource.HttpResource;
+
 import javax.crypto.SecretKey;
+import java.net.http.HttpResponse;
 import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
@@ -77,6 +81,12 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+
+    /**
+     * 토큰 값 읽는 로직
+     * @param token
+     * @return
+     */
     public Jws<Claims> readJwt(String token) {
         if(token == null || token.isBlank() || token.isEmpty()){
             throw new NullPointerException();
@@ -92,8 +102,7 @@ public class JwtUtils {
             return claims;
         }
         catch (Exception e){
-
+            throw  e;
         }
-        return null;
     }
 }
