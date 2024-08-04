@@ -48,7 +48,7 @@ public class JwtUtils {
                     .add("수신자 1")
                     .add("수신자 2")
                     .and()
-                .expiration(new Date(System.currentTimeMillis() + (1000 * 60))) // 토큰의 만료시간 현재는 테스트이기 때문에 1초 로 설정
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60))) // 토큰의 만료시간 현재는 테스트이기 때문에 1분 로 설정
                 .notBefore(new Date(System.currentTimeMillis() + (1000)))
                 .issuedAt(new Date()) // 토큰이 발행한 시각 명시
                 .id(UUID.randomUUID().toString()) // JWT id 명시 역시 필수는 아니다.
@@ -77,13 +77,11 @@ public class JwtUtils {
      * @param token
      * @return
      */
-    public void isValidJwt(String token) {
+    public boolean isValidJwt(String token) {
         if (token == null || token.isBlank() || token.isEmpty()) {
             throw new NullPointerException();
         }
         String jwt = token.replaceAll("^Bearer( )*", "");
-        Jws<Claims> claims;
-
         try {
             Jwt<?, ?> parse = Jwts.parser()
                     .setSigningKey(SECRET_KEY_64)
@@ -92,5 +90,7 @@ public class JwtUtils {
         } catch (Exception e) {
             throw e;
         }
+
+        return true;
     }
 }
