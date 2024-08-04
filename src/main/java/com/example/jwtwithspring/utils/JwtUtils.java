@@ -1,21 +1,11 @@
 package com.example.jwtwithspring.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletResponse;
-import org.apache.catalina.util.StringUtil;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.resource.HttpResource;
 
 import javax.crypto.SecretKey;
-import java.net.http.HttpResponse;
-import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
 
@@ -58,8 +48,8 @@ public class JwtUtils {
                     .add("수신자 1")
                     .add("수신자 2")
                     .and()
-                .expiration(new Date(System.currentTimeMillis() + (1000 * 60))) // 토큰의 만료시간 현재는 테스트이기 때문에 1초 로 설정
-                .notBefore(new Date(System.currentTimeMillis() + (1000))) // 해당 시간 이전에는 토큰이 처리되서는 안되는걸 설정하기 위한 명시, 역시 필요가 없으면 사용 안해도 무방
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 24))) // 토큰의 만료시간 현재는 테스트이기 때문에 1초 로 설정
+
                 .issuedAt(new Date()) // 토큰이 발행한 시각 명시
                 .id(UUID.randomUUID().toString()) // JWT id 명시 역시 필수는 아니다.
                 // 여기까지 기본 클레임을 설정하고 이후부터 커스텀 클레임을 지정하는 구간이다.
@@ -87,22 +77,22 @@ public class JwtUtils {
      * @param token
      * @return
      */
-    public Jws<Claims> readJwt(String token) {
-        if(token == null || token.isBlank() || token.isEmpty()){
+    public String readJwt(String token) {
+        if (token == null || token.isBlank() || token.isEmpty()) {
             throw new NullPointerException();
         }
         String jwt = token.replaceAll("^Bearer( )*", "");
         Jws<Claims> claims;
 
-        try{
-            claims = Jwts.parser()
+        try {
+            Jwt<?, ?> parse = Jwts.parser()
                     .setSigningKey(SECRET_KEY_64)
-                    .build().parseSignedClaims(token);
+                    .build()
+                    .parse(jwt);
 
-            return claims;
-        }
-        catch (Exception e){
-            throw  e;
+            return parse.getPayload().toString();
+        } catch (Exception e) {
+            throw e;
         }
     }
 }
