@@ -48,8 +48,8 @@ public class JwtUtils {
                     .add("수신자 1")
                     .add("수신자 2")
                     .and()
-                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 24))) // 토큰의 만료시간 현재는 테스트이기 때문에 1초 로 설정
-
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60))) // 토큰의 만료시간 현재는 테스트이기 때문에 1초 로 설정
+                .notBefore(new Date(System.currentTimeMillis() + (1000)))
                 .issuedAt(new Date()) // 토큰이 발행한 시각 명시
                 .id(UUID.randomUUID().toString()) // JWT id 명시 역시 필수는 아니다.
                 // 여기까지 기본 클레임을 설정하고 이후부터 커스텀 클레임을 지정하는 구간이다.
@@ -73,11 +73,11 @@ public class JwtUtils {
 
 
     /**
-     * 토큰 값 읽는 로직
+     * 토큰값 파싱 테스트
      * @param token
      * @return
      */
-    public String readJwt(String token) {
+    public void isValidJwt(String token) {
         if (token == null || token.isBlank() || token.isEmpty()) {
             throw new NullPointerException();
         }
@@ -89,8 +89,6 @@ public class JwtUtils {
                     .setSigningKey(SECRET_KEY_64)
                     .build()
                     .parse(jwt);
-
-            return parse.getPayload().toString();
         } catch (Exception e) {
             throw e;
         }
