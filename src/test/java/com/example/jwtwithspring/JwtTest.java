@@ -31,6 +31,6 @@ public class JwtTest {
     public void readJwt(){
         String jwt = this.jwtUtils.createJwt();
 
-        this.jwtUtils.readJwt(jwt);
+        Assertions.assertTrue(this.jwtUtils.isValidJwt(jwt));
     }
 }
